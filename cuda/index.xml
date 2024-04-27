@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CUDAs on SunGeng Blog</title>
+    <link>https://sungenglab.github.io/cuda/</link>
+    <description>Recent content in CUDAs on SunGeng Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 27 Apr 2024 14:25:03 +0800</lastBuildDate>
+    <atom:link href="https://sungenglab.github.io/cuda/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HelloWorld</title>
+      <link>https://sungenglab.github.io/cuda/helloworld/</link>
+      <pubDate>Sat, 27 Apr 2024 14:25:03 +0800</pubDate>
+      <guid>https://sungenglab.github.io/cuda/helloworld/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>
