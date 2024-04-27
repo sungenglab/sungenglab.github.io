@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tag1 on SunGeng Blog</title>
-    <link>http://localhost:1313/tags/tag1/</link>
+    <link>https://sungenglab.github.io/tags/tag1/</link>
     <description>Recent content in Tag1 on SunGeng Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 27 Apr 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/tag1/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://sungenglab.github.io/tags/tag1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hello World</title>
-      <link>http://localhost:1313/post/firsttry/</link>
+      <link>https://sungenglab.github.io/post/firsttry/</link>
       <pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/firsttry/</guid>
+      <guid>https://sungenglab.github.io/post/firsttry/</guid>
       <description></description>
     </item>
     <item>
       <title>深入理解Pytorch源码中的CUDA算子01-ReduceSum</title>
-      <link>http://localhost:1313/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</link>
+      <link>https://sungenglab.github.io/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</link>
       <pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</guid>
+      <guid>https://sungenglab.github.io/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</guid>
       <description></description>
     </item>
   </channel>
