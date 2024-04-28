@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="SunGeng Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="img/nvidia-ai-on-rtx-100vp-d.jpg">
+    <meta property="twitter:image" content="img/nvidia-ai-on-rtx-100vp-d.jpg" />
+    
+
+    
+    <meta name="title" content="高性能计算基础知识" />
+    <meta property="og:title" content="高性能计算基础知识" />
+    <meta property="twitter:title" content="高性能计算基础知识" />
+    
+
+    
+    <meta name="description" content="随缘整理，其实还有很多知识需要记录，持续更新...">
+    <meta property="og:description" content="随缘整理，其实还有很多知识需要记录，持续更新..." />
+    <meta property="twitter:description" content="随缘整理，其实还有很多知识需要记录，持续更新..." />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="CUDA，GPU">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>高性能计算基础知识 | SunGeng Blog</title>
+
+    <link rel="canonical" href="/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/">
+
+    
+    
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hugo-theme-cleanwhite.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+
+    
+    <link rel="stylesheet" href="/css/font-awesome.all.min.css">
+
+    
+    
+
+    
+    <script src="/js/jquery.min.js"></script>
+
+    
+    <script src="/js/bootstrap.min.js"></script>
+
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    <script src="/js/lazysizes.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">SunGeng Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">All Posts</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech/">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/archive//">ARCHIVE</a></li>
+                    
+                        <li><a href="/notes//">NOTES</a></li>
+                    
+                        <li><a href="/about//">ABOUT</a></li>
+                    
+		            <li>
+                        <a href="/search"><i class="fa fa-search"></i></a>
+		           </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/nvidia-ai-on-rtx-100vp-d.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/cuda" title="CUDA">
+                            CUDA
+                        </a>
+                        
+                    </div>
+                    <h1>高性能计算基础知识</h1>
+                    <h2 class="subheading">High performance computing basics</h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                     SunGeng
+                             
+                            on 
+                            Sunday, April 28, 2024
+                            
+                            
+                            
+                            
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <h2 id="1-半精度浮点数fp16各个部分的具体位数为什么要有半精度浮点数">1. 半精度浮点数FP16各个部分的具体位数，为什么要有半精度浮点数？</h2>
+<p>半精度浮点数（FP16）是一种使用16位（2字节）来表示的浮点数格式。在这16位中，各个部分的位数分配如下：</p>
+<ul>
+<li>
+<p>符号位（Sign bit）：1位
+用于表示数值的正负，0代表正数，1代表负数。</p>
+</li>
+<li>
+<p>指数位（Exponent bits）：5位
+用于表示数值的指数部分，采用偏移量（bias）编码，偏移量为2^(k-1) - 1，其中k是指数位的位数，对于FP16，偏移量为2^(5-1) - 1 = 15。</p>
+</li>
+<li>
+<p>尾数位（Mantissa bits，也称为有效数字位或小数位）：10位
+用于表示数值的尾数部分，也就是数值的精确度。</p>
+</li>
+</ul>
+<p>半精度浮点数的具体格式如下：</p>
+<pre tabindex="0"><code>S EEEEE FFFFFFFF
+</code></pre><p>其中，<code>S</code> 是符号位，<code>EEEEE</code> 是指数位，<code>FFFFFFFF</code> 是尾数位。</p>
+<p>半精度浮点数之所以存在，主要是因为它在某些应用场景中提供了一种权衡精度和存储空间的解决方案。以下是一些使用半精度浮点数的理由：</p>
+<ol>
+<li>
+<p><strong>减少存储需求</strong>：
+在处理大量浮点数据时，使用半精度可以减少内存占用，降低存储成本。</p>
+</li>
+<li>
+<p><strong>提高数据传输效率</strong>：
+由于数据量减少，使用半精度可以加快数据传输速度，特别是在带宽受限的系统中。</p>
+</li>
+<li>
+<p><strong>加速计算</strong>：
+一些硬件支持半精度运算，可以在保持足够精度的同时提高计算速度。</p>
+</li>
+<li>
+<p><strong>适用于特定应用</strong>：
+在一些对精度要求不是特别高的应用中，如图形渲染、机器学习和深度学习，半精度浮点数可以提供足够的精度，同时提高性能。</p>
+</li>
+<li>
+<p><strong>节能</strong>：
+使用半精度可以减少计算资源的使用，从而降低能耗，这在移动设备和嵌入式系统中尤其重要。</p>
+</li>
+</ol>
+<p>总之，半精度浮点数提供了一种在精度和性能之间进行权衡的有效方式，尤其适用于对存储和计算效率有特殊要求的场景。</p>
+<h2 id="2-稀疏矩阵的存储格式有哪些稀疏矩阵的应用场景稀疏矩阵计算与稠密矩阵计算有何不同">2. 稀疏矩阵的存储格式有哪些？稀疏矩阵的应用场景？稀疏矩阵计算与稠密矩阵计算有何不同？</h2>
+<p>稀疏矩阵的存储格式主要有以下几种：</p>
+<ol>
+<li>
+<p><strong>坐标列表（COO，Coordinate List）</strong>：
+存储非零元素的行索引、列索引和值。适合用于快速构建稀疏矩阵。</p>
+</li>
+<li>
+<p><strong>压缩稀疏行（CSR，Compressed Sparse Row）或压缩行存储（CRS）</strong>：
+存储非零元素的值，非零元素所在的列索引，以及每行非零元素起始位置的行指针。适合用于快速的行遍历和矩阵-向量乘法。</p>
+</li>
+<li>
+<p><strong>压缩稀疏列（CSC，Compressed Sparse Column）或压缩列存储（CCS）</strong>：
+类似于CSR，但是是按列来压缩存储的。适合用于快速的列遍历。</p>
+</li>
+<li>
+<p><strong>压缩对角存储（DIA，Diagonal）</strong>：
+仅存储矩阵的对角线及其附近的非零元素。适合于对角线或近对角线元素非零的矩阵。</p>
+</li>
+<li>
+<p><strong>块格式（BSR，Block Sparse Row）</strong>：
+将矩阵分割成小块，仅存储非零块。适合于块状非零元素分布的矩阵。</p>
+</li>
+</ol>
+<p>稀疏矩阵的应用场景包括：</p>
+<ul>
+<li><strong>图论</strong>：在图的表示中，邻接矩阵往往是稀疏的。</li>
+<li><strong>数值分析</strong>：在求解偏微分方程时，系数矩阵通常是稀疏的。</li>
+<li><strong>计算机视觉</strong>：在特征匹配和3D重建中，涉及的矩阵可能是稀疏的。</li>
+<li><strong>机器学习和数据挖掘</strong>：在处理大规模数据集时，数据矩阵（如文档-词项矩阵）可能是稀疏的。</li>
+<li><strong>网络分析</strong>：互联网或社交网络的连接矩阵通常是稀疏的。</li>
+</ul>
+<p>稀疏矩阵计算与稠密矩阵计算的不同之处：</p>
+<ul>
+<li><strong>存储效率</strong>：稀疏矩阵只存储非零元素，而稠密矩阵需要为每个元素分配存储空间，包括零元素。</li>
+<li><strong>计算效率</strong>：稀疏矩阵的计算可以跳过零元素，直接对非零元素进行操作，从而节省计算资源和时间。稠密矩阵</li>
+</ul>
+<h2 id="3-如何计算cpu指令的吞吐量和时延">3. 如何计算CPU指令的吞吐量和时延?</h2>
+<p>计算CPU指令的吞吐量（Throughput）和时延（Latency）通常涉及到对CPU性能的测量和分析。以下是计算这两个指标的基本方法：</p>
+<h3 id="吞吐量throughput">吞吐量（Throughput）</h3>
+<p>吞吐量是指CPU在单位时间内能完成的指令数或任务数。它通常用每秒可以执行的指令数（Instructions Per Second, IPS）或每秒钟的浮点运算次数（Floating-point Operations Per Second, FLOPS）来衡量。</p>
+<p><strong>计算方法</strong>：</p>
+<ol>
+<li>
+<p><strong>确定测量时间段</strong>：选择一个足够长的时间段来测量CPU执行的指令数，以便可以得到一个平均值。</p>
+</li>
+<li>
+<p><strong>记录指令数</strong>：使用性能监视工具（如Linux的<code>perf</code>工具）来记录在这段时间内CPU执行的指令总数。</p>
+</li>
+<li>
+<p><strong>计算吞吐量</strong>：将记录的指令总数除以时间段的长度（秒），得到每秒执行的指令数（IPS）。</p>
+<pre tabindex="0"><code>吞吐量（IPS） = 总指令数 / 时间段（秒）
+</code></pre></li>
+</ol>
+<h3 id="时延latency">时延（Latency）</h3>
+<p>时延是指完成单个指令所需的平均时间。它可以表示为从指令发出到执行完成的时间。</p>
+<p><strong>计算方法</strong>：</p>
+<ol>
+<li>
+<p><strong>确定指令类型</strong>：选择要测量时延的指令类型，因为不同的指令可能有不同的时延。</p>
+</li>
+<li>
+<p><strong>测量执行时间</strong>：使用高精度计时器测量单个指令或一组相同指令的执行时间。</p>
+</li>
+<li>
+<p><strong>计算平均时延</strong>：如果测量了一组指令的执行时间，将总时间除以指令数，得到单个指令的平均时延。</p>
+<pre tabindex="0"><code>时延（秒） = 总执行时间（秒） / 指令数
+</code></pre></li>
+</ol>
+<h3 id="实际测量">实际测量</h3>
+<p>在实际中，CPU的性能可能受到多种因素的影响，包括缓存命中率、分支预测的准确性、指令并行度、流水线效率等。因此，通常需要使用专门的性能分析工具来测量吞吐量和时延。</p>
+<p>对于现代CPU，它们通常具有多级流水线和超标量架构，可以同时执行多条指令。这意味着吞吐量可能远高于时延的倒数，因为多条指令可能在同一时刻处于不同的执行阶段。</p>
+<p>此外，许多CPU设计采用乱序执行技术，可以在等待某些指令（如内存访问）完成时执行其他指令，这也会影响实际的吞吐量和时延。</p>
+<p>在进行性能测量时，建议使用如下工具和方法：</p>
+<ul>
+<li><strong>性能计数器</strong>：如<code>perf</code>（Linux）、Intel VTune Profiler、AMD uProf等。</li>
+<li><strong>基准测试程序</strong>：如SPEC CPU、LINPACK等，它们可以提供标准化的性能测试。</li>
+<li><strong>微基准测试</strong>：针对特定指令或指令组合的小规模测试，可以使用编程方式精确控制和测量。</li>
+</ul>
+<p>最终，吞吐量和时延的测量应该在特定的工作负载和系统配置下进行，以便得到有意义的结果。</p>
+<h2 id="4-cpu上哪些并行优化方法">4. CPU上哪些并行优化方法？</h2>
+<p>在CPU上实现并行优化的方法有多种，旨在提高处理器的性能和计算效率。以下是一些常见的并行优化技术：</p>
+<ol>
+<li>
+<p><strong>指令级并行（ILP, Instruction-Level Parallelism）</strong>：</p>
+<ul>
+<li><strong>流水线（Pipelining）</strong>：将指令的执行过程分解为多个阶段，不同阶段的指令可以同时在不同的流水线阶段执行。</li>
+<li><strong>超标量架构（Superscalar）</strong>：允许每个时钟周期内发射（dispatch）和执行多条指令。</li>
+<li><strong>乱序执行（Out-of-Order Execution）</strong>：允许指令根据资源的可用性而非程序顺序来执行，以减少等待和提高效率。</li>
+<li><strong>投机执行（Speculative Execution）</strong>：预测分支结果并提前执行指令，如果预测错误则撤销执行结果。</li>
+</ul>
+</li>
+<li>
+<p><strong>数据级并行（DLP, Data-Level Parallelism）</strong>：</p>
+<ul>
+<li><strong>向量化（Vectorization）</strong>：使用SIMD（Single Instruction, Multiple Data）指令同时对多个数据元素执行相同的操作。</li>
+<li><strong>数组处理</strong>：在数据数组上应用并行操作，通常通过编译器自动向量化或者手动优化实现。</li>
+</ul>
+</li>
+<li>
+<p><strong>线程级并行（TLP, Thread-Level Parallelism）</strong>：</p>
+<ul>
+<li><strong>多线程（Multithreading）</strong>：在单个处理器上同时执行多个线程，可以是粗粒度的（如多进程）或细粒度的（如超线程/同时多线程技术）。</li>
+<li><strong>多核处理（Multicore Processing）</strong>：使用多个CPU核心，每个核心可以独立执行不同的线程或进程。</li>
+</ul>
+</li>
+<li>
+<p><strong>任务级并行（Task-Level Parallelism）</strong>：</p>
+<ul>
+<li><strong>并行算法设计</strong>：将大任务分解为可以并行执行的小任务。</li>
+<li><strong>任务调度</strong>：在多核心或多处理器系统中，合理分配任务以平衡负载并最大化资源利用率。</li>
+</ul>
+</li>
+<li>
+<p><strong>存储系统优化</strong>：</p>
+<ul>
+<li><strong>缓存优化</strong>：通过提高缓存命中率来减少内存访问延迟，包括循环变换、数据预取和缓存友好的数据结构设计。</li>
+<li><strong>内存访问并行化</strong>：设计算法和数据结构以减少内存访问冲突和提高内存带宽利用率。</li>
+</ul>
+</li>
+<li>
+<p><strong>编译器优化</strong>：</p>
+<ul>
+<li><strong>自动并行化</strong>：编译器尝试自动识别并行执行的机会，并转换代码以利用ILP和DLP。</li>
+<li><strong>依赖分析</strong>：编译器分析数据依赖关系，以确定哪些操作可以并行执行。</li>
+</ul>
+</li>
+<li>
+<p><strong>软件并行框架和库</strong>：</p>
+<ul>
+<li><strong>OpenMP</strong>：一个支持多平台共享内存并行编程的API。</li>
+<li><strong>Intel Threading Building Blocks (TBB)</strong>：一个支持任务级并行的C++库。</li>
+<li><strong>Cilk Plus</strong>：一个支持任务和数据并行的语言扩展。</li>
+</ul>
+</li>
+</ol>
+<p>并行优化通常需要综合考虑算法设计、程序结构、编译器优化以及硬件特性，以达到最佳的性能提升。在实际应用中，开发者可能需要结合多种技术来实现并行计算。</p>
+<h2 id="5-如何进行cuda-kernel的优化会用到哪些工具">5. 如何进行cuda kernel的优化，会用到哪些工具?</h2>
+<p>进行CUDA kernel的优化是一个复杂的过程，涉及对硬件架构的深入理解和对代码的精细调整。以下是一些常用的CUDA kernel优化策略和工具：</p>
+<h3 id="优化策略">优化策略</h3>
+<ol>
+<li>
+<p><strong>内存访问优化</strong>：</p>
+<ul>
+<li>利用共享内存（Shared Memory）来减少全局内存（Global Memory）访问次数。</li>
+<li>优化内存访问模式以减少全局内存访问延迟，例如，通过确保内存访问的合并（Coalesced Access）和避免银行冲突（Bank Conflicts）。</li>
+<li>使用异步内存传输（Asynchronous Memory Transfers）来重叠内存传输和计算。</li>
+</ul>
+</li>
+<li>
+<p><strong>执行配置优化</strong>：</p>
+<ul>
+<li>选择合适的线程块（Block）大小和网格（Grid）维度以充分利用GPU的并行处理能力。</li>
+<li>调整线程块大小以确保足够的线程并行度和良好的多处理器占用率（Occupancy）。</li>
+</ul>
+</li>
+<li>
+<p><strong>计算优化</strong>：</p>
+<ul>
+<li>减少不必要的计算和算术操作，特别是浮点运算。</li>
+<li>利用数学函数库（如cuBLAS, cuFFT等）中的优化函数。</li>
+<li>利用指令级并行（ILP）和线程级并行（TLP）。</li>
+</ul>
+</li>
+<li>
+<p><strong>循环和分支优化</strong>：</p>
+<ul>
+<li>展开循环（Loop Unrolling）以减少循环开销。</li>
+<li>避免线程分歧（Thread Divergence）以确保线程块内的线程同步执行。</li>
+</ul>
+</li>
+<li>
+<p><strong>寄存器和共享内存使用优化</strong>：</p>
+<ul>
+<li>优化寄存器使用，避免寄存器溢出导致的局部内存（Local Memory）使用。</li>
+<li>合理分配共享内存，避免共享内存不足。</li>
+</ul>
+</li>
+</ol>
+<h3 id="优化工具">优化工具</h3>
+<ol>
+<li>
+<p><strong>NVIDIA Visual Profiler</strong>：</p>
+<ul>
+<li>一个图形化的性能分析工具，可以帮助分析CUDA程序的性能瓶颈。</li>
+</ul>
+</li>
+<li>
+<p><strong>NVIDIA Nsight Compute</strong>：</p>
+<ul>
+<li>一个用于CUDA应用的交互式内核分析器，提供详细的性能指标和硬件执行特性。</li>
+</ul>
+</li>
+<li>
+<p><strong>NVIDIA Nsight Systems</strong>：</p>
+<ul>
+<li>一个系统级性能分析工具，用于分析应用程序的整体性能和多线程行为。</li>
+</ul>
+</li>
+<li>
+<p><strong>cuobjdump</strong>：</p>
+<ul>
+<li>一个CUDA二进制文件分析工具，可以用来查看kernel的PTX和SASS代码，帮助开发者理解编译器优化。</li>
+</ul>
+</li>
+<li>
+<p><strong>nvprof</strong>：</p>
+<ul>
+<li>命令行性能分析工具，可以收集和分析CUDA程序的性能数据。</li>
+</ul>
+</li>
+<li>
+<p><strong>CUDA-MEMCHECK</strong>：</p>
+<ul>
+<li>一个用于检测CUDA程序中内存错误的工具，包括越界访问和竞争条件。</li>
+</ul>
+</li>
+</ol>
+<p>在进行优化时，通常的流程是先使用性能分析工具识别瓶颈，然后根据分析结果逐步调整代码。优化过程可能需要多次迭代，每次都要通过实验来验证优化效果。此外，优化时还应考虑不同GPU架构的特性，因为不同的GPU可能对优化策略的响应不同。</p>
+<h2 id="6-tensorcore的加速原理">6. TensorCore的加速原理</h2>
+<p>TensorCore是NVIDIA推出的一种专用硬件加速单元，它是在NVIDIA的Volta及其后续图形处理器（GPU）架构中引入的。TensorCore的设计目的是为了加速深度学习和机器学习中的某些类型的计算，特别是矩阵乘法，这是深度神经网络训练和推理中的关键操作。</p>
+<p>TensorCore的加速原理主要基于以下几点：</p>
+<ol>
+<li>
+<p><strong>专用硬件设计</strong>：TensorCore是为了执行深度学习中的特定操作（如矩阵乘法和累加）而优化的硬件单元。它可以并行处理大量的浮点运算，这比通用的CUDA核心更加高效。</p>
+</li>
+<li>
+<p><strong>混合精度计算</strong>：TensorCore支持混合精度计算，这意味着它可以同时使用不同精度的数据（如FP16和FP32）。使用较低精度的数据可以减少内存带宽和存储需求，同时加快计算速度，而不会显著影响模型的准确性。</p>
+</li>
+<li>
+<p><strong>并行矩阵运算</strong>：TensorCore可以同时执行多个矩阵运算，这是通过将矩阵分解成小块并在多个TensorCore上并行处理来实现的。这种方式大大提高了处理速度。</p>
+</li>
+<li>
+<p><strong>软件优化</strong>：为了充分利用TensorCore的能力，NVIDIA提供了专门的深度学习库（如cuDNN和TensorRT），这些库经过优化，可以自动调度计算任务到TensorCore上执行。</p>
+</li>
+<li>
+<p><strong>硬件和软件协同</strong>：TensorCore的效能还依赖于与CUDA编程模型的紧密集成，开发者可以通过高级API调用TensorCore功能，而无需直接管理底层硬件。</p>
+</li>
+</ol>
+<p>总的来说，TensorCore通过专用硬件设计、混合精度计算、并行矩阵运算以及软件优化，实现了在深度学习应用中的显著加速。这些特性使得TensorCore成为在科学计算和人工智能领域中非常重要的技术。</p>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://sungenglab.github.io/"><img src="/img/favicon.png" />SunGeng Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/post/firsttry/" data-toggle="tooltip" data-placement="top" title="Hello World">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/cuda" title="cuda">
+                            cuda
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pytorch" title="pytorch">
+                            pytorch
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">                  
+                    
+                    <li>
+                        <a href="mailto:geng_sun@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fas fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		           
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/gang-syun">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+
+		            
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/sungenglab">
+                            <span class="fa-stack fa-lg">
+                                <i class="fas fa-circle fa-stack-2x"></i>
+                                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		            
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+            
+            
+            
+           
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="SunGeng Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fas fa-circle fa-stack-2x"></i>
+                               <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+            
+             </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; SunGeng Blog 2024
+                    
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function loadAsync(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        loadAsync("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        
+        
+        
+        
+            _containerSelector = 'div.post-container'
+        
+
+        
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        
+        $(selector).html('')
+
+        
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    
+
+
+    loadAsync("\/js\/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+
+</body>
+</html>
