@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="深入理解Pytorch源码中的CUDA算子01-ReduceSum" />
-    <meta property="og:title" content="深入理解Pytorch源码中的CUDA算子01-ReduceSum" />
-    <meta property="twitter:title" content="深入理解Pytorch源码中的CUDA算子01-ReduceSum" />
+    <meta name="title" content="深入理解Pytorch源码中的CUDA算子01-BlockReduceSum" />
+    <meta property="og:title" content="深入理解Pytorch源码中的CUDA算子01-BlockReduceSum" />
+    <meta property="twitter:title" content="深入理解Pytorch源码中的CUDA算子01-BlockReduceSum" />
     
 
     
-    <meta name="description" content="">
-    <meta property="og:description" content="" />
-    <meta property="twitter:description" content="" />
+    <meta name="description" content="探究下pytorch是如何高效的对一个block中的数据进行规约的">
+    <meta property="og:description" content="探究下pytorch是如何高效的对一个block中的数据进行规约的" />
+    <meta property="twitter:description" content="探究下pytorch是如何高效的对一个block中的数据进行规约的" />
     
 
     
@@ -34,7 +34,7 @@
     <meta name="keyword"  content="CUDA，GPU">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>深入理解Pytorch源码中的CUDA算子01-ReduceSum | SunGeng Blog</title>
+    <title>深入理解Pytorch源码中的CUDA算子01-BlockReduceSum | SunGeng Blog</title>
 
     <link rel="canonical" href="/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/">
 
@@ -179,7 +179,7 @@
                         </a>
                         
                     </div>
-                    <h1>深入理解Pytorch源码中的CUDA算子01-ReduceSum</h1>
+                    <h1>深入理解Pytorch源码中的CUDA算子01-BlockReduceSum</h1>
                     <h2 class="subheading"></h2>
                     <span class="meta">
                         
@@ -214,7 +214,81 @@
                 post-container">
 
                 
-                
+                <p>准备开一个专题，写写pytorch中常用的CUDA算子源码，作为基础储备，索性就从最基础的Reduce操作开始吧！</p>
+<h1 id="0x00-前言">0x00 前言</h1>
+<p>在神经网络的计算中，对一组数据进行规约是非常常见的操作，譬如规约求和（ReduceSum）、规约求最大最小值（ReduceMax, RedeceMin）等基础算子。</p>
+<p>在CUDA中进行数据规约是每一个CUDA学习者绕不开的训练，在《<em><strong>CUDA C编程权威指南</strong></em>》中，以在全局内存中进行规约作为baseline，作者分别介绍如下优化方法：</p>
+<ol>
+<li>避免线程束中的分支分化</li>
+<li>使用交错配对而不是相邻配对</li>
+<li>使用展开循环</li>
+<li>使用模板函数（编译时决定代码分支）</li>
+<li>使用共享内存 + 线程展开</li>
+<li>使用动态共享内存 + 线程展开</li>
+</ol>
+<p>以上优化的具体内容我们这里不表，因为是很基础的操作了，并且在实际项目开发中这些技术也已经过时，不能满足实际需求，感兴趣的可以自行翻阅，只需要理解每一步的优化思路即可，毕竟思路是永不过时的。</p>
+<p>这篇博客主要对Pytorch源码中使用的BlockReduceSum CUDA算子进行分析，源码路径如下：
+<a href="https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/block_reduce.cuh#L71">https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/block_reduce.cuh#L71</a></p>
+<h1 id="0x01-lane--warp">0x01 Lane &amp; Warp</h1>
+<p>BlockReduceSum是针对一个Block中的数据进行规约的，因此我们得先介绍CUDA执行模型中的一个重要概念<strong>warp</strong>，我们知道当一个block被调度到一个SM上时，block中的所有threads会被划分为一簇线程束（<strong>warp</strong>），每个<strong>warp</strong>包含连续的32个threads，因此每个block中的线程束数量可以如下计算：</p>
+<p>$$线程块数量 = ceil\begin{pmatrix} \frac {block中的线程数量} {线程束大小}\end{pmatrix}$$</p>
+<p>一个block中最多有1024个threads,线程束大小一般都是32，因此一个block中的线程束数量最多也只有32个。
+
+  <figure>
+    <img src="/static/markdown_pics/warp.png" alt="warp示意图">
+    <center><figcaption>一个block中的线程束示意图</figcaption></center>
+  </figure>
+
+</p>
+<h1 id="0x02-源码分析">0x02 源码分析</h1>
+<p>源码：</p>
+<pre><code>template &lt;typename T, typename B = Block1D&gt;
+__inline__ __device__ T BlockReduceSum(T val, T* shared) {
+    const int tid = B::Tid();
+    const int lid = tid % C10_WARP_SIZE;
+    const int wid = tid / C10_WARP_SIZE;
+    val = WarpReduceSum(val);
+    __syncthreads(); // prevent races when BlockReduces are called in a row.
+    if (lid == 0) {
+        shared[wid] = val;
+    }
+    __syncthreads();
+    val = (tid &lt; B::Warps()) ? shared[lid] : T(0);
+    if (wid == 0) {
+        val = WarpReduceSum(val);
+    }
+    return val;
+}
+</code></pre>
+<p>首先该函数使用了模板函数，可以。。。，在模板中，<strong>T</strong>为数据类型，<strong>B</strong>为Block线程组织形状，这里默认使用1D的Block单元:</p>
+<pre><code>struct Block1D {
+    static __forceinline__ __device__ int Tid() { return threadIdx.x; }
+
+    static __forceinline__ __device__ int Warps() {
+        return blockDim.x / C10_WARP_SIZE;
+    }
+};
+</code></pre>
+<p>相应的2D Block单元为：</p>
+<pre><code>struct Block2D {
+    static __forceinline__ __device__ int Tid() {
+        return threadIdx.x + threadIdx.y * blockDim.x;
+    }
+
+    static __forceinline__ __device__ int Warps() {
+        return blockDim.x * blockDim.y / C10_WARP_SIZE;
+    }
+};
+</code></pre>
+<p>回到源码继续分析，函数接受两个参数，</p>
+<h1 id="0x03-kernel调用">0x03 kernel调用</h1>
+<h1 id="0x04-参考链接">0x04 参考链接</h1>
+<ol>
+<li><em>《CUDA C编程权威指南》</em></li>
+<li><em>n</em></li>
+<li><em>u</em></li>
+</ol>
+
 
                 
                 

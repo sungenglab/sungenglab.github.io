@@ -23,11 +23,11 @@
       <description></description>
     </item>
     <item>
-      <title>深入理解Pytorch源码中的CUDA算子01-ReduceSum</title>
+      <title>深入理解Pytorch源码中的CUDA算子01-BlockReduceSum</title>
       <link>https://sungenglab.github.io/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</link>
       <pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate>
       <guid>https://sungenglab.github.io/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</guid>
-      <description></description>
+      <description>准备开一个专题，写写pytorch中常用的CUDA算子源码，作为基础储备，索性就从最基础的Reduce操作开始吧！ 0x00 前言 在神经网络的计算中，</description>
     </item>
   </channel>
 </rss>
