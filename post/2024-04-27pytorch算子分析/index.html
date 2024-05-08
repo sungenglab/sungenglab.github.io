@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://sungenglab.github.io//img/Interstaller2.jpg">
-    <meta property="twitter:image" content="https://sungenglab.github.io//img/Interstaller2.jpg" />
+    <meta property="og:image" content="/img/nvidia-ai-on-rtx-100vp-d.jpg">
+    <meta property="twitter:image" content="/img/nvidia-ai-on-rtx-100vp-d.jpg" />
     
 
     
@@ -158,7 +158,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/img/Interstaller2.jpg')
+        background-image: url('/img/nvidia-ai-on-rtx-100vp-d.jpg')
     }
 </style>
 
@@ -230,12 +230,13 @@
 <p>这篇博客主要对Pytorch源码中使用的BlockReduceSum CUDA算子进行分析，源码路径如下：
 <a href="https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/block_reduce.cuh#L71">https://github.com/pytorch/pytorch/blob/main/aten/src/ATen/native/cuda/block_reduce.cuh#L71</a></p>
 <h1 id="0x01-lane--warp">0x01 Lane &amp; Warp</h1>
-<p>BlockReduceSum是针对一个Block中的数据进行规约的，因此我们得先介绍CUDA执行模型中的一个重要概念<strong>warp</strong>，我们知道当一个block被调度到一个SM上时，block中的所有threads会被划分为一簇线程束（<strong>warp</strong>），每个<strong>warp</strong>包含连续的32个threads，因此每个block中的线程束数量可以如下计算：</p>
-<p>$$线程块数量 = ceil\begin{pmatrix} \frac {block中的线程数量} {线程束大小}\end{pmatrix}$$</p>
-<p>一个block中最多有1024个threads,线程束大小一般都是32，因此一个block中的线程束数量最多也只有32个。
+<p>BlockReduceSum是针对一个Block中的数据进行规约的，因此我们得先介绍CUDA执行模型中的一个重要概念<strong>warp</strong>，我们知道当一个block被调度到一个SM上时，block中的所有threads会被划分为一簇线程束（<strong>warp</strong>），线程束是GPU上一组并行执行的线程，每个线程独立执行指令，但在一个线程束中的线程会以SIMD（单指令多数据）方式并行执行相同的指令，但处理不同的数据。每个<strong>warp</strong>包含连续的32个threads，因此每个block中的线程束数量可以如下计算：</p>
+<p>$$线程束数量 = ceil\begin{pmatrix} \frac {block中的线程数量} {线程束大小}\end{pmatrix}$$</p>
+<p>一个block中最多有1024个threads,线程束大小一般都是32，因此一个block中的线程束数量最多也只有32个，如下图纵坐标所示；</p>
+<p>lane意为车道，在并发系统中，一般指执行并发任务的单个执行单元，它可以是一个线程、一个进程或其他执行单元的抽象，在CUDA中，通常指的是在一个线程束（warp）中的单个线程，如下图中横坐标表示。
 
   <figure>
-    <img src="/static/markdown_pics/warp.png" alt="warp示意图">
+    <img src="/img/warp.png" alt="warp示意图">
     <center><figcaption>一个block中的线程束示意图</figcaption></center>
   </figure>
 
@@ -260,7 +261,7 @@ __inline__ __device__ T BlockReduceSum(T val, T* shared) {
     return val;
 }
 </code></pre>
-<p>首先该函数使用了模板函数，可以。。。，在模板中，<strong>T</strong>为数据类型，<strong>B</strong>为Block线程组织形状，这里默认使用1D的Block单元:</p>
+<p>首先该函数使用了模板函数，<strong>T</strong>为数据类型，<strong>B</strong>为Block线程组织形状，这里默认使用1D的Block单元:</p>
 <pre><code>struct Block1D {
     static __forceinline__ __device__ int Tid() { return threadIdx.x; }
 
@@ -269,24 +270,83 @@ __inline__ __device__ T BlockReduceSum(T val, T* shared) {
     }
 };
 </code></pre>
-<p>相应的2D Block单元为：</p>
-<pre><code>struct Block2D {
-    static __forceinline__ __device__ int Tid() {
-        return threadIdx.x + threadIdx.y * blockDim.x;
-    }
-
-    static __forceinline__ __device__ int Warps() {
-        return blockDim.x * blockDim.y / C10_WARP_SIZE;
-    }
-};
-</code></pre>
-<p>回到源码继续分析，函数接受两个参数，</p>
-<h1 id="0x03-kernel调用">0x03 kernel调用</h1>
-<h1 id="0x04-参考链接">0x04 参考链接</h1>
+<ol>
+<li>回到源码继续分析，函数接受两个参数，val为初值，shared为T类型的指针，可传入共享内存地址；</li>
+<li>获取block中的线程索引tid = threadidx.x;</li>
+<li>通过<strong>tid</strong>对<strong>C10_WARP_SIZE</strong>取余获取<strong>lid</strong>；</li>
+<li>用<strong>tid</strong>整除<strong>C10_WARP_SIZE</strong>获得<strong>wid</strong>;(lid, wid可结合上述示意图理解，应该很好理解)</li>
+<li>调用WarpReduceSum函数做一次规约，下面我们走进源码继续看。</li>
+</ol>
+<pre tabindex="0"><code>// Sums `val` across all threads in a warp.     
+//      
+// Assumptions:     
+//   - The size of each block should be a multiple of `C10_WARP_SIZE`       
+template &lt;typename T&gt;       
+__inline__ __device__ T WarpReduceSum(T val) {      
+    #pragma unroll      
+    for (int offset = (C10_WARP_SIZE &gt;&gt; 1); offset &gt; 0; offset &gt;&gt;= 1) {     
+        val += WARP_SHFL_DOWN(val, offset);     
+    }       
+    return val;     
+} 
+</code></pre><p>该函数使用一个for循环，offset初始化为C10_WARP_SIZE &raquo; 1,即右移一位，为16，以后每次继续右移一位，接下来循环体这里使用了一个宏函数<em><strong>WARP_SHFL_DOWN</strong></em>.</p>
+<pre tabindex="0"><code>template &lt;typename T&gt;
+__device__ __forceinline__ T WARP_SHFL_DOWN(T value, unsigned int delta, int width = warpSize, unsigned int mask = 0xffffffff)
+{
+#if !defined(USE_ROCM)
+    return __shfl_down_sync(mask, value, delta, width);
+#else
+    return __shfl_down(value, delta, width);
+#endif
+}
+</code></pre><p><em><strong>__shfl_down_sync(mask, value, delta, width)</strong></em> 是一个CUDA内置函数，属于Warp Shuffle Functions，这一系列函数可以对一个warp内的数据进行交换或者亦或操作，只在CUDA计算能力5.0及以上的卡上才被支持，这样的函数一共有四个，分别是：</p>
+<pre tabindex="0"><code>T __shfl_sync(unsigned mask, T var, int srcLane, int width=warpSize);
+T __shfl_up_sync(unsigned mask, T var, unsigned int delta, int width=warpSize);
+T __shfl_down_sync(unsigned mask, T var, unsigned int delta, int width=warpSize);
+T __shfl_xor_sync(unsigned mask, T var, int laneMask, int width=warpSize);
+</code></pre><p>回到循环体中，代码逐步将变量 val 的值从线程束中的高id位向低id位进行归约求和，使用了 <em><strong>__shfl_down_sync</strong></em> 函数来进行数据交换和归约操作。具体步骤如下：</p>
+<ol>
+<li>初始化变量 offset 为线程束大小的一半（C10_WARP_SIZE &raquo; 1）。这是因为归约操作是通过不断减少偏移量来逐步将数据从高位向低位进行求和。</li>
+<li>进入循环，循环条件是 offset 大于 0。</li>
+<li>在循环体内，__shfl_down_sync 函数用于将位于 val 的值在线程束内向下偏移 offset 个位置进行交换。该函数的参数解释如下：</li>
+</ol>
+<pre tabindex="0"><code>mask = 0xffffffff 表示使用全掩码，即所有线程都参与数据交换。        
+val 是当前线程的值，将被交换到其他线程。        
+offset 是偏移量，用于指定交换的目标线程。       
+width 在这里表示线程束的大小。
+</code></pre><ol start="4">
+<li>
+<p>将 <strong>__shfl_down_sync</strong> 返回的值与 val 相加，得到更新后的 val 值。</p>
+</li>
+<li>
+<p>在每次循环迭代结束后，将 offset 右移一位（offset &raquo;= 1），以便下一次迭代时只考虑更低位的线程。</p>
+</li>
+<li>
+<p>通过这个循环，线程束内的每个线程将与其他线程进行数据交换并进行逐步归约求和，直到warp中所有lane的数据都被累加到val中，并且这个值存放在lane0的位置，因为时从高往低规约。</p>
+</li>
+<li>
+<p>接下来继续回到主调用函数中，这里进行了一次 <strong>__syncthreads()</strong> 进行一次块内同步，这里源码有一句注释，同步是为了防止连续调用 BlockReduceSum 函数时出现竞争条件。试想，当多个线程块按顺序调用 BlockReduceSum 函数时，第一个线程块的归约操作可能还没有完成，第二个线程块就开始进行归约操作，便有可能导致错误的结果。</p>
+</li>
+<li>
+<p>接着将lid == 0 的线程中的数据都复制到shared memery中；</p>
+</li>
+<li>
+<p>进行一次同步，确保shared memery拿到所有需要的线程结果；</p>
+</li>
+<li>
+<p>通过条件语句 <em><strong>(tid &lt; B::Warps()) ? shared[lid] : T(0)</strong></em> ，根据当前线程的ID判断是否属于有效的线程束。如果是有效线程束内的线程，从shared数组中读取归约结果；否则，将val设为类型T的默认值T(0)。</p>
+</li>
+<li>
+<p>如果线程束ID为0（即wid == 0），对val再次进行线程束内的归约求和操作。</p>
+</li>
+<li>
+<p>返回最终的归约结果val。</p>
+</li>
+</ol>
+<h1 id="0x03-参考链接">0x03 参考链接</h1>
 <ol>
 <li><em>《CUDA C编程权威指南》</em></li>
-<li><em>n</em></li>
-<li><em>u</em></li>
+<li><em><a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/#warp-shuffle-synopsis">https://docs.nvidia.com/cuda/cuda-c-programming-guide/#warp-shuffle-synopsis</a></em></li>
 </ol>
 
 
@@ -302,7 +362,7 @@ __inline__ __device__ T BlockReduceSum(T val, T* shared) {
 <div class="zs-modal-box">
 	<div class="zs-modal-head">
 		<button type="button" class="close">×</button>
-		<span class="author"><a href="https://sungenglab.github.io/"><img src="/img/headpicture.jpg" />SunGeng Blog</a></span>
+		<span class="author"><a href="http://localhost:1313/"><img src="/img/headpicture.jpg" />SunGeng Blog</a></span>
         
 	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
 		
@@ -589,5 +649,7 @@ __inline__ __device__ T BlockReduceSum(T val, T* shared) {
 
 
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
