@@ -37,6 +37,13 @@
       <description>准备开一个专题，写写pytorch中常用的CUDA算子源码，作为基础储备，索性就从最基础的Reduce操作开始吧！ 0x00 前言 在神经网络的计算中，</description>
     </item>
     <item>
+      <title>深入理解Pytorch源码中的CUDA算子02</title>
+      <link>https://sungenglab.github.io/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/</link>
+      <pubDate>Mon, 04 Jun 2018 00:00:00 +0000</pubDate>
+      <guid>https://sungenglab.github.io/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/</guid>
+      <description></description>
+    </item>
+    <item>
       <title></title>
       <link>https://sungenglab.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

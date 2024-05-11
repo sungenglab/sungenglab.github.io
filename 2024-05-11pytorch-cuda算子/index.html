@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,14 +10,14 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="http://localhost:1313//img/Interstaller2.jpg">
-    <meta property="twitter:image" content="http://localhost:1313//img/Interstaller2.jpg" />
+    <meta property="og:image" content="https://sungenglab.github.io//img/Interstaller2.jpg">
+    <meta property="twitter:image" content="https://sungenglab.github.io//img/Interstaller2.jpg" />
     
 
     
-    <meta name="title" content="" />
-    <meta property="og:title" content="" />
-    <meta property="twitter:title" content="" />
+    <meta name="title" content="深入理解Pytorch源码中的CUDA算子02" />
+    <meta property="og:title" content="深入理解Pytorch源码中的CUDA算子02" />
+    <meta property="twitter:title" content="深入理解Pytorch源码中的CUDA算子02" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="CUDA，GPU">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Tag1 | SunGeng Blog</title>
+    <title>深入理解Pytorch源码中的CUDA算子02 | SunGeng Blog</title>
 
-    <link rel="canonical" href="/tags/tag1/">
+    <link rel="canonical" href="/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/">
 
     
     
@@ -155,14 +155,45 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/Interstaller2.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/Interstaller2.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>SunGeng Blog </h1>
-                    
-		    <span class="subheading">练得身形似鹤形，千株松下两函经</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/pytorch" title="Pytorch">
+                            Pytorch
+                        </a>
+                        
+                        <a class="tag" href="/tags/cuda" title="CUDA">
+                            CUDA
+                        </a>
+                        
+                    </div>
+                    <h1>深入理解Pytorch源码中的CUDA算子02</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                     SunGeng
+                             
+                            on 
+                            Monday, June 4, 2018
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -171,127 +202,178 @@
 
 
 
-  
-<div data-pagefind-ignore="all" class="container">
-    <div class="row">
-        
-        
-   	    <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container
-        ">
-            
-<div data-pagefind-ignore="all">
 
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
-
-            
-
-
-
-       	</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://sungenglab.github.io/"><img src="/img/headpicture.jpg" />SunGeng Blog</a></span>
         
-
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/headpicture.jpg" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>High-performance computing engineer, CUDA operator developer, AI beginner.</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:geng_sun@163.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://www.zhihu.com/people/gang-syun">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-stack-1x fa-inverse">知</i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/sungenglab">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-            
-            
-               
-               
-               
-               
-                </ul>
-            </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-            
-            
-               
-            
-               
-            
-        </div>
-    </section>
-    
-
-    
-    
-    
-</div>
-
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
 	</div>
 </div>
+<script type="text/javascript" src="/js/reward.js"></script>
 
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/about/" data-toggle="tooltip" data-placement="top" title="">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+                
+
+                
+
+<div id="twikoo-tcomment"></div>
+<script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.32/dist/twikoo.all.min.js"></script>
+<script>
+    twikoo.init({
+        envId: 'https:\/\/qiaoyan-myspace.hf.space',
+        el: '#twikoo-tcomment',
+        lang: 'zh-CN',
+        region: 'ap-guangzhou',
+
+        
+        notify: {
+        server: 'smtp.163.com',
+        port: 465,
+        secure: true,
+        username: 'geng_sun@163.com',
+        password: 'NNUFRPNNSWJMEFBG',
+        sender: 'Twikoo <geng_sun@163.com>',
+        receiver: ['geng_sun@163.com'],
+
+        
+        upload: {
+        service: 'github',
+        owner: 'sungenbglab',
+        repo: 'SiteSupporter',
+        path: 'Images/',
+        branch: 'main',
+        token: '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',
+  },
+  },
+    })
+</script>
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/cuda" title="cuda">
+                            cuda
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pytorch" title="pytorch">
+                            pytorch
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/twikoo" title="twikoo">
+                            twikoo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%BB%BA%E7%AB%99" title="建站">
+                            建站
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
 
 
 
@@ -351,7 +433,7 @@
             
            
                    <li>
-                       <a href='/tags/tag1/index.xml' rel="alternate" type="application/rss+xml" title="SunGeng Blog" >
+                       <a href='' rel="alternate" type="application/rss+xml" title="SunGeng Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fas fa-circle fa-stack-2x"></i>
                                <i class="fas fa-rss fa-stack-1x fa-inverse"></i>
@@ -477,5 +559,7 @@
 
 
 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </body>
 </html>
