@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://sungenglab.github.io//img/Interstaller2.jpg">
-    <meta property="twitter:image" content="https://sungenglab.github.io//img/Interstaller2.jpg" />
+    <meta property="og:image" content="http://localhost:1313//img/Interstaller2.jpg">
+    <meta property="twitter:image" content="http://localhost:1313//img/Interstaller2.jpg" />
     
 
     
@@ -185,10 +185,10 @@
                         
                             Posted by 
                             
-                                     &#34;SunGeng&#34;
+                                     SunGeng
                              
                             on 
-                            Monday, June 4, 2018
+                            Saturday, May 11, 2024
                             
                             
                             
@@ -219,8 +219,39 @@
 <h1 id="配置即时通知邮件通知">配置即时通知/邮件通知</h1>
 <h1 id="显示评论人头像">显示评论人头像</h1>
 <h1 id="配置图床实现图片上传功能">配置图床实现图片上传功能</h1>
+<p>选了一圈儿，最终使用了smms来配置上传功能，操作很简单，只需要在管理页面设置即可： <br>
+
+  <img src="/img/Sitebuild/1715411016122.png" alt="alt text">
+
+
+如何获取smms Token呢，首先进官网<a href="https://sm.ms/">text</a>，注册登录如下：
+
+  <img src="/img/Sitebuild/1715411206217.png" alt="alt text">
+
+
+进入右上角user-&gt;DashBoard页面，选择token如下
+
+  <img src="/img/Sitebuild/1715411272099.png" alt="alt text">
+
+
+选择generate即可
+
+  <img src="/img/Sitebuild/1715411399693.png" alt="alt text">
+
+
+将token复制到twikoo配置管理页面，大功告成，测试评论一个图片，成功如下：
+
+  <img src="/img/Sitebuild/1715411535555.png" alt="alt text">
+
+</p>
+<p>进入smms后台看，刚上传的图片就在这里，你可以对其进行管理了
+
+  <img src="/img/Sitebuild/1715411606358.png" alt="alt text">
+
+</p>
 <h1 id="对我有用的链接">对我有用的链接</h1>
-<p>感谢你们：</p>
+<p>感谢你们：
+<em><a href="https://zhuanlan.zhihu.com/p/347342082">https://zhuanlan.zhihu.com/p/347342082</a></em></p>
 
 
                 
@@ -235,7 +266,7 @@
 <div class="zs-modal-box">
 	<div class="zs-modal-head">
 		<button type="button" class="close">×</button>
-		<span class="author"><a href="https://sungenglab.github.io/"><img src="/img/headpicture.jpg" />SunGeng Blog</a></span>
+		<span class="author"><a href="http://localhost:1313/"><img src="/img/headpicture.jpg" />SunGeng Blog</a></span>
         
 	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
 		
@@ -269,11 +300,11 @@
                 <hr>
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="深入理解Pytorch源码中的CUDA算子01-BlockReduceSum">Next
-                            Post &rarr;</a>
+                    <li class="previous">
+                        <a href="/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/" data-toggle="tooltip" data-placement="top" title="高性能计算基础知识">&larr;
+                            Previous Post</a>
                     </li>
+                    
                     
                 </ul>
                 
@@ -286,8 +317,9 @@
     twikoo.init({
         envId: 'https:\/\/qiaoyan-myspace.hf.space',
         el: '#twikoo-tcomment',
-        locale: 'zh-CN',
-
+        lang: 'zh-CN',
+        region: 'ap-guangzhou',
+        
         
         notify: {
         server: 'smtp.163.com',
