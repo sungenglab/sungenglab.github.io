@@ -243,25 +243,25 @@
 </p>
 <h1 id="0x02-源码分析">0x02 源码分析</h1>
 <p>源码：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span>template <span style="color:#f92672">&lt;</span>typename T, typename B <span style="color:#f92672">=</span> Block1D<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>__inline__ __device__ T BlockReduceSum(T val, T<span style="color:#f92672">*</span> shared) {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">int</span> tid <span style="color:#f92672">=</span> B::Tid();
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">int</span> lid <span style="color:#f92672">=</span> tid <span style="color:#f92672">%</span> C10_WARP_SIZE;
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">int</span> wid <span style="color:#f92672">=</span> tid <span style="color:#f92672">/</span> C10_WARP_SIZE;
-</span></span><span style="display:flex;"><span>    val <span style="color:#f92672">=</span> WarpReduceSum(val);
-</span></span><span style="display:flex;"><span>    __syncthreads(); <span style="color:#f92672">//</span> prevent races when BlockReduces are called <span style="color:#f92672">in</span> a row<span style="color:#f92672">.</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (lid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-</span></span><span style="display:flex;"><span>        shared[wid] <span style="color:#f92672">=</span> val;
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span>template <span style="color:#ff7b72;font-weight:bold">&lt;</span>typename T, typename B <span style="color:#ff7b72;font-weight:bold">=</span> Block1D<span style="color:#ff7b72;font-weight:bold">&gt;</span>
+</span></span><span style="display:flex;"><span>__inline__ __device__ T BlockReduceSum(T val, T<span style="color:#ff7b72;font-weight:bold">*</span> shared) {
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">const</span> <span style="color:#f0883e;font-weight:bold">int</span> tid <span style="color:#ff7b72;font-weight:bold">=</span> B::Tid();
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">const</span> <span style="color:#f0883e;font-weight:bold">int</span> lid <span style="color:#ff7b72;font-weight:bold">=</span> tid <span style="color:#ff7b72;font-weight:bold">%</span> C10_WARP_SIZE;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">const</span> <span style="color:#f0883e;font-weight:bold">int</span> wid <span style="color:#ff7b72;font-weight:bold">=</span> tid <span style="color:#ff7b72;font-weight:bold">/</span> C10_WARP_SIZE;
+</span></span><span style="display:flex;"><span>    val <span style="color:#ff7b72;font-weight:bold">=</span> WarpReduceSum(val);
+</span></span><span style="display:flex;"><span>    __syncthreads(); <span style="color:#ff7b72;font-weight:bold">//</span> prevent races when BlockReduces are called <span style="color:#ff7b72;font-weight:bold">in</span> a row<span style="color:#ff7b72;font-weight:bold">.</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">if</span> (lid <span style="color:#ff7b72;font-weight:bold">==</span> <span style="color:#a5d6ff">0</span>) {
+</span></span><span style="display:flex;"><span>        shared[wid] <span style="color:#ff7b72;font-weight:bold">=</span> val;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    __syncthreads();
-</span></span><span style="display:flex;"><span>    val <span style="color:#f92672">=</span> (tid <span style="color:#f92672">&lt;</span> B::Warps()) <span style="color:#960050;background-color:#1e0010">?</span> shared[lid] : T(<span style="color:#ae81ff">0</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (wid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
-</span></span><span style="display:flex;"><span>        val <span style="color:#f92672">=</span> WarpReduceSum(val);
+</span></span><span style="display:flex;"><span>    val <span style="color:#ff7b72;font-weight:bold">=</span> (tid <span style="color:#ff7b72;font-weight:bold">&lt;</span> B::Warps()) <span style="color:#f85149">?</span> shared[lid] : T(<span style="color:#a5d6ff">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">if</span> (wid <span style="color:#ff7b72;font-weight:bold">==</span> <span style="color:#a5d6ff">0</span>) {
+</span></span><span style="display:flex;"><span>        val <span style="color:#ff7b72;font-weight:bold">=</span> WarpReduceSum(val);
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> val;
+</span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">return</span> val;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>首先该函数使用了模板函数，<strong>T</strong>为数据类型，<strong>B</strong>为Block线程组织形状，这里默认使用1D的Block单元:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>struct Block1D {
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>struct Block1D {
 </span></span><span style="display:flex;"><span>    static __forceinline__ __device__ int Tid() { return threadIdx.x; }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    static __forceinline__ __device__ int Warps() {
@@ -275,20 +275,20 @@
 <li>用<strong>tid</strong>整除<strong>C10_WARP_SIZE</strong>获得<strong>wid</strong>;(lid, wid可结合上述示意图理解，应该很好理解)</li>
 <li>调用WarpReduceSum函数做一次规约，下面我们走进源码继续看。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#f92672">//</span> Sums <span style="color:#f92672">`</span>val<span style="color:#f92672">`</span> across <span style="color:#66d9ef">all</span> threads <span style="color:#66d9ef">in</span> a warp.     
-</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span>      
-</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span> Assumptions:     
-</span></span><span style="display:flex;"><span><span style="color:#f92672">//</span>   <span style="color:#f92672">-</span> The size of <span style="color:#66d9ef">each</span> block should be a multiple of <span style="color:#f92672">`</span>C10_WARP_SIZE<span style="color:#f92672">`</span>       
-</span></span><span style="display:flex;"><span>template <span style="color:#f92672">&lt;</span>typename T<span style="color:#f92672">&gt;</span>       
-</span></span><span style="display:flex;"><span>__inline__ __device__ T <span style="color:#a6e22e">WarpReduceSum</span>(T val) <span style="color:#960050;background-color:#1e0010">{</span>      
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#pragma unroll      
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> offset <span style="color:#f92672">=</span> (C10_WARP_SIZE <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">1</span>); offset <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>; offset <span style="color:#f92672">&gt;&gt;=</span> <span style="color:#ae81ff">1</span>) <span style="color:#960050;background-color:#1e0010">{</span>     
-</span></span><span style="display:flex;"><span>        val <span style="color:#f92672">+=</span> <span style="color:#a6e22e">WARP_SHFL_DOWN</span>(val, offset);     
-</span></span><span style="display:flex;"><span>    <span style="color:#960050;background-color:#1e0010">}</span>       
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> val;     
-</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">}</span> 
-</span></span></code></pre></div><p>该函数使用一个for循环，offset初始化为C10_WARP_SIZE &raquo; 1,即右移一位，为16，以后每次继续右移一位，接下来循环体这里使用了一个宏函数<em><strong>WARP_SHFL_DOWN</strong></em>.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>template &lt;typename T&gt;
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#ff7b72;font-weight:bold">//</span><span style="color:#6e7681"> </span>Sums<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">`</span>val<span style="color:#ff7b72;font-weight:bold">`</span><span style="color:#6e7681"> </span>across<span style="color:#6e7681"> </span><span style="color:#ff7b72">all</span><span style="color:#6e7681"> </span>threads<span style="color:#6e7681"> </span><span style="color:#ff7b72">in</span><span style="color:#6e7681"> </span>a<span style="color:#6e7681"> </span>warp.<span style="color:#6e7681">     
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681"></span><span style="color:#ff7b72;font-weight:bold">//</span><span style="color:#6e7681">      
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681"></span><span style="color:#ff7b72;font-weight:bold">//</span><span style="color:#6e7681"> </span>Assumptions:<span style="color:#6e7681">     
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681"></span><span style="color:#ff7b72;font-weight:bold">//</span><span style="color:#6e7681">   </span><span style="color:#ff7b72;font-weight:bold">-</span><span style="color:#6e7681"> </span>The<span style="color:#6e7681"> </span>size<span style="color:#6e7681"> </span>of<span style="color:#6e7681"> </span><span style="color:#ff7b72">each</span><span style="color:#6e7681"> </span>block<span style="color:#6e7681"> </span>should<span style="color:#6e7681"> </span>be<span style="color:#6e7681"> </span>a<span style="color:#6e7681"> </span>multiple<span style="color:#6e7681"> </span>of<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">`</span>C10_WARP_SIZE<span style="color:#ff7b72;font-weight:bold">`</span><span style="color:#6e7681">       
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681"></span>template<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">&lt;</span>typename<span style="color:#6e7681"> </span>T<span style="color:#ff7b72;font-weight:bold">&gt;</span><span style="color:#6e7681">       
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681"></span>__inline__<span style="color:#6e7681"> </span>__device__<span style="color:#6e7681"> </span>T<span style="color:#6e7681"> </span><span style="color:#d2a8ff;font-weight:bold">WarpReduceSum</span>(T<span style="color:#6e7681"> </span>val)<span style="color:#6e7681"> </span><span style="color:#f85149">{</span><span style="color:#6e7681">      
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681">    </span><span style="color:#8b949e;font-style:italic">#pragma unroll      
+</span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span><span style="color:#6e7681">    </span><span style="color:#ff7b72">for</span><span style="color:#6e7681"> </span>(<span style="color:#ff7b72">int</span><span style="color:#6e7681"> </span>offset<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">=</span><span style="color:#6e7681"> </span>(C10_WARP_SIZE<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">&gt;&gt;</span><span style="color:#6e7681"> </span><span style="color:#a5d6ff">1</span>);<span style="color:#6e7681"> </span>offset<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">&gt;</span><span style="color:#6e7681"> </span><span style="color:#a5d6ff">0</span>;<span style="color:#6e7681"> </span>offset<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">&gt;&gt;=</span><span style="color:#6e7681"> </span><span style="color:#a5d6ff">1</span>)<span style="color:#6e7681"> </span><span style="color:#f85149">{</span><span style="color:#6e7681">     
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681">        </span>val<span style="color:#6e7681"> </span><span style="color:#ff7b72;font-weight:bold">+=</span><span style="color:#6e7681"> </span><span style="color:#d2a8ff;font-weight:bold">WARP_SHFL_DOWN</span>(val,<span style="color:#6e7681"> </span>offset);<span style="color:#6e7681">     
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681">    </span><span style="color:#f85149">}</span><span style="color:#6e7681">       
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681">    </span><span style="color:#ff7b72">return</span><span style="color:#6e7681"> </span>val;<span style="color:#6e7681">     
+</span></span></span><span style="display:flex;"><span><span style="color:#6e7681"></span><span style="color:#f85149">}</span><span style="color:#6e7681"> 
+</span></span></span></code></pre></div><p>该函数使用一个for循环，offset初始化为C10_WARP_SIZE &raquo; 1,即右移一位，为16，以后每次继续右移一位，接下来循环体这里使用了一个宏函数<em><strong>WARP_SHFL_DOWN</strong></em>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>template &lt;typename T&gt;
 </span></span><span style="display:flex;"><span>__device__ __forceinline__ T WARP_SHFL_DOWN(T value, unsigned int delta, int width = warpSize, unsigned int mask = 0xffffffff)
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>#if !defined(USE_ROCM)
@@ -298,17 +298,17 @@
 </span></span><span style="display:flex;"><span>#endif
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><em><strong>__shfl_down_sync(mask, value, delta, width)</strong></em> 是一个CUDA内置函数，属于Warp Shuffle Functions，这一系列函数可以对一个warp内的数据进行交换或者亦或操作，只在CUDA计算能力5.0及以上的卡上才被支持，这样的函数一共有四个，分别是：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span>T __shfl_sync(unsigned mask, T <span style="color:#66d9ef">var</span>, <span style="color:#a6e22e">int</span> srcLane, <span style="color:#a6e22e">int</span> width<span style="color:#f92672">=</span>warpSize);
-</span></span><span style="display:flex;"><span>T __shfl_up_sync(unsigned mask, T <span style="color:#66d9ef">var</span>, unsigned <span style="color:#a6e22e">int</span> delta, <span style="color:#a6e22e">int</span> width<span style="color:#f92672">=</span>warpSize);
-</span></span><span style="display:flex;"><span>T __shfl_down_sync(unsigned mask, T <span style="color:#66d9ef">var</span>, unsigned <span style="color:#a6e22e">int</span> delta, <span style="color:#a6e22e">int</span> width<span style="color:#f92672">=</span>warpSize);
-</span></span><span style="display:flex;"><span>T __shfl_xor_sync(unsigned mask, T <span style="color:#66d9ef">var</span>, <span style="color:#a6e22e">int</span> laneMask, <span style="color:#a6e22e">int</span> width<span style="color:#f92672">=</span>warpSize);
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-gdscript3" data-lang="gdscript3"><span style="display:flex;"><span>T __shfl_sync(unsigned mask, T <span style="color:#ff7b72">var</span>, <span style="color:#f0883e;font-weight:bold">int</span> srcLane, <span style="color:#f0883e;font-weight:bold">int</span> width<span style="color:#ff7b72;font-weight:bold">=</span>warpSize);
+</span></span><span style="display:flex;"><span>T __shfl_up_sync(unsigned mask, T <span style="color:#ff7b72">var</span>, unsigned <span style="color:#f0883e;font-weight:bold">int</span> delta, <span style="color:#f0883e;font-weight:bold">int</span> width<span style="color:#ff7b72;font-weight:bold">=</span>warpSize);
+</span></span><span style="display:flex;"><span>T __shfl_down_sync(unsigned mask, T <span style="color:#ff7b72">var</span>, unsigned <span style="color:#f0883e;font-weight:bold">int</span> delta, <span style="color:#f0883e;font-weight:bold">int</span> width<span style="color:#ff7b72;font-weight:bold">=</span>warpSize);
+</span></span><span style="display:flex;"><span>T __shfl_xor_sync(unsigned mask, T <span style="color:#ff7b72">var</span>, <span style="color:#f0883e;font-weight:bold">int</span> laneMask, <span style="color:#f0883e;font-weight:bold">int</span> width<span style="color:#ff7b72;font-weight:bold">=</span>warpSize);
 </span></span></code></pre></div><p>回到循环体中，代码逐步将变量 val 的值从线程束中的高id位向低id位进行归约求和，使用了 <em><strong>__shfl_down_sync</strong></em> 函数来进行数据交换和归约操作。具体步骤如下：</p>
 <ol>
 <li>初始化变量 offset 为线程束大小的一半（C10_WARP_SIZE &raquo; 1）。这是因为归约操作是通过不断减少偏移量来逐步将数据从高位向低位进行求和。</li>
 <li>进入循环，循环条件是 offset 大于 0。</li>
 <li>在循环体内，__shfl_down_sync 函数用于将位于 val 的值在线程束内向下偏移 offset 个位置进行交换。该函数的参数解释如下：</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>mask = 0xffffffff 表示使用全掩码，即所有线程都参与数据交换。        
+<div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>mask = 0xffffffff 表示使用全掩码，即所有线程都参与数据交换。        
 </span></span><span style="display:flex;"><span>val 是当前线程的值，将被交换到其他线程。        
 </span></span><span style="display:flex;"><span>offset 是偏移量，用于指定交换的目标线程。       
 </span></span><span style="display:flex;"><span>width 在这里表示线程束的大小。
