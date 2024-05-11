@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Twikoo on SunGeng Blog</title>
-    <link>http://localhost:1313/tags/twikoo/</link>
+    <link>https://sungenglab.github.io/tags/twikoo/</link>
     <description>Recent content in Twikoo on SunGeng Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 11 May 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/twikoo/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://sungenglab.github.io/tags/twikoo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>建站|Twikoo评论系统配置从0到1</title>
-      <link>http://localhost:1313/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</link>
+      <link>https://sungenglab.github.io/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</link>
       <pubDate>Sat, 11 May 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</guid>
+      <guid>https://sungenglab.github.io/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</guid>
       <description>在Hugging Face上部署Twikoo数据库 版本更新 配置即时通知/邮件通知 显示评论人头像 配置图床实现图片上传功能 选了一圈儿，最终使用了s</description>
     </item>
   </channel>
