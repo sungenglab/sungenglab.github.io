@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="Hello World" />
-    <meta property="og:title" content="Hello World" />
-    <meta property="twitter:title" content="Hello World" />
+    <meta name="title" content="01 计算机系统漫游" />
+    <meta property="og:title" content="01 计算机系统漫游" />
+    <meta property="twitter:title" content="01 计算机系统漫游" />
     
 
     
-    <meta name="description" content="My First Blog, just for a try, ha ha">
-    <meta property="og:description" content="My First Blog, just for a try, ha ha" />
-    <meta property="twitter:description" content="My First Blog, just for a try, ha ha" />
+    <meta name="description" content="">
+    <meta property="og:description" content="" />
+    <meta property="twitter:description" content="" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="CUDA，GPU">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Hello World | SunGeng Blog</title>
+    <title>01 计算机系统漫游 | SunGeng Blog</title>
 
-    <link rel="canonical" href="/post/firsttry/">
+    <link rel="canonical" href="/notes/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/">
 
     
     
@@ -171,18 +171,18 @@
                     <div class="tags">
                         
                     </div>
-                    <h1>Hello World</h1>
-                    <h2 class="subheading">This is my first commit.</h2>
+                    <h1>01 计算机系统漫游</h1>
+                    <h2 class="subheading"></h2>
                     <span class="meta">
                         
                             Posted by 
                             
-                                     SunGeng
+                                    SunGeng Blog
                              
                             on 
-                            Saturday, April 27, 2024
+                            Sunday, May 26, 2024
                             
-                                <span id="/post/firsttry/" class="leancloud_visitors meta_data_item" data-flag-title="">
+                                <span id="/notes/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/" class="leancloud_visitors meta_data_item" data-flag-title="">
     <span class="post-meta-item-icon">
       <span class="octicon octicon-eye"></span> 
     </span>
@@ -340,7 +340,75 @@ $(function() {
                 post-container">
 
                 
-                
+                <h1 id="第一章前菜">第一章：前菜</h1>
+<p>系统中所有信息（磁盘文件，内存程序）都是一组01序列，称为位序列，8个位（byte）组织为一组，成为一个<strong>字节</strong></p>
+<p>英文文本字符都是用ASCII标准表示，一个字符用一个字节表示，另外为表示其他语言，有了Unicode编码</p>
+<p>只包含ASCII编码的文件称为文本文件，其余所有为二进制文件</p>
+<h2 id="编译系统">编译系统</h2>
+<p>编译系统四个阶段： 预处理器、编译器、汇编器、连接器。</p>
+<h2 id="系统硬件组成">系统硬件组成</h2>
+<p>总线：一组电子管道，携带信息字节在各个部件之间传递，一次传送定长的字节块，成为<strong>字（word）</strong>，字中的字节数成为<strong>字长</strong>，例如32位机器4个字节，64位机器8个字节</p>
+<p>I/O设备：键鼠磁盘</p>
+<p>主存：处理器执行程序时，用来临时存放程序以及程序数据的存储设备，由一组<strong>动态随机存取存储器</strong>（DRAM）组成。 可以理解为线性的字节数组。</p>
+<p>处理器：CPU，核心是大小为一个字的存储设备（寄存器），称为程序计数器（PC）。
+处理器不断的执行程序计数器指向的指令，更新计数器，指向下一条。<br>
+处理器按照指令执行模型来执行指令，这个模型称为<strong>指令集架构</strong>。</p>
+<p>加载：从主存复制一个字/字节到寄存器中，覆盖寄存器中原有内容。 <br>
+存储: 从寄存器复制一个字/字节到主存的某个位置，覆盖原有值。  <br>
+操作：把两个寄存器的内容复制到ALU，ALU对其做算术运算，并将结果存放到一个寄存器，覆盖原有值。 <br>
+跳转：从指令本身中抽取一个字，并将这个字复制到PC中，覆盖PC中原有值。<em><strong>（没明白。。。）</strong></em></p>
+<p><strong>指令集架构</strong>：每条机器代码的指令效果</p>
+<p><strong>微体系结构</strong>：处理器实际上是如何实现的</p>
+<p><strong>DMA</strong>（直接存储器存取）：数据不通过处理器而直接从磁盘到达主存。</p>
+<p><strong>高速缓存</strong>: L1在片上，容量数万字节，速度几与寄存器等同；L2通过特殊总线与处理器连接，容量数十百万字节；L3更大更慢。</p>
+<h2 id="操作系统">操作系统</h2>
+<p>三个抽象概念：进程、虚拟内存、文件</p>
+<p>文件: 对I/O的抽象；
+虚拟内存：对主存和磁盘I/O的抽象；<br>
+进程： 对处理器、主存、I/O的抽象；</p>
+<h3 id="进程">进程</h3>
+<p>单核并发： 交错运行，上下文切换</p>
+<h3 id="线程">线程</h3>
+<h3 id="虚拟内存">虚拟内存</h3>
+<p>每个进程都看似独占主存，其实看到的都是虚拟地址空间。</p>
+<h3 id="文件">文件</h3>
+<p>字节序列</p>
+<h3 id="超线程">超线程</h3>
+<p>允许一个CPU执行多个控制流的技术</p>
+<h3 id="指令级并行">指令级并行</h3>
+<h3 id="单指令多数据并行">单指令多数据并行</h3>
+<p>SIMD</p>
+<h1 id="第二章信息的表示与处理">第二章：信息的表示与处理</h1>
+<p>无符号数 <br>
+有符号数 <br>
+浮点数<br>
+溢出</p>
+<h2 id="信息存储">信息存储</h2>
+<p>字节： 最小的可寻址的内存单位。</p>
+<p>虚拟内存： 用主存抽象出来的一个非常大的字节数组。</p>
+<p>地址： 表示每个字节的一个唯一的数字。</p>
+<p>虚拟地址空间： 所有可能的地址集合。</p>
+<h3 id="十六进制hex">十六进制（hex）</h3>
+<h3 id="字数据大小">字数据大小</h3>
+<p>字长决定虚拟地址空间大小： 字长w,则虚拟地址范围0~2^w^-1.</p>
+<p>char类型是有符号的还是无符号的？？？</p>
+<h3 id="寻址和字节顺序">寻址和字节顺序</h3>
+<p>大端法（big endian）：最高有效字节在最前面</p>
+<p>小端法 (little endian)：</p>
+<h3 id="位运算">位运算</h3>
+<p>|<br>
+&amp;<br>
+~</p>
+<h3 id="逻辑运算">逻辑运算</h3>
+<p>||<br>
+&amp;&amp;<br>
+！</p>
+<h3 id="移位运算">移位运算</h3>
+<p>左移： &laquo;</p>
+<p>右移： &raquo;</p>
+<p>算数右移：  左端补0
+逻辑右移：  左端补k个有效位的值</p>
+
 
                 
                 
@@ -389,15 +457,10 @@ $(function() {
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="深入理解Pytorch源码中的CUDA算子01-BlockReduceSum">&larr;
+                        <a href="/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/" data-toggle="tooltip" data-placement="top" title="深入理解Pytorch源码中的CUDA算子02">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/" data-toggle="tooltip" data-placement="top" title="高性能计算基础知识">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
                 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://sungenglab.github.io//img/2024-02-05-Game-04-Wallpaper-small.jpg">
-    <meta property="twitter:image" content="https://sungenglab.github.io//img/2024-02-05-Game-04-Wallpaper-small.jpg" />
+    <meta property="og:image" content="http://localhost:1313//img/2024-02-05-Game-04-Wallpaper-small.jpg">
+    <meta property="twitter:image" content="http://localhost:1313//img/2024-02-05-Game-04-Wallpaper-small.jpg" />
     
 
     
@@ -155,14 +155,171 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/2024-02-05-Game-04-Wallpaper-small.jpg')">
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/2024-02-05-Game-04-Wallpaper-small.jpg')
+    }
+</style>
+
+<header class="intro-header" >
+
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>SunGeng Blog </h1>
-                    
-		    <span class="subheading">练得身形似鹤形，千株松下两函经</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                    </div>
+                    <h1></h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        
+                            Posted by 
+                            
+                                    SunGeng Blog
+                             
+                            on 
+                            Monday, January 1, 0001
+                            
+                                <span id="/notes/" class="leancloud_visitors meta_data_item" data-flag-title="">
+    <span class="post-meta-item-icon">
+      <span class="octicon octicon-eye"></span> 
+    </span>
+    <i class="fa fa-eye"></i>
+    <span class="old-visitors-count" style="display: none;"></span>
+    <span class="leancloud-visitors-count"></span>
+</span>
+
+
+
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+
+<script>
+	AV.initialize("nTSLFsQY6GKmyvyKQMBCBmHo-gzGzoHsz", "3FQbILrA4KnMwgjtcdDSgYH3");
+</script>
+
+<script type="text/javascript">
+function showTime(Counter) {
+    var query = new AV.Query(Counter);
+    var entries = [];
+    var $visitors = $(".leancloud_visitors");
+
+    $visitors.each(function() {
+        entries.push($(this).attr("id").trim());
+    });
+
+    query.containedIn('url', entries);
+    query.find()
+        .done(function(results) {
+            var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+            var OLD_COUNT_CONTAINER_REF = '.old-visitors-count';
+
+            
+            
+            
+            
+
+            for (var i = 0; i < results.length; i++) {
+                var item = results[i];
+                var url = item.get('url');
+                var time = item.get('time');
+                var element = document.getElementById(url);
+
+                $(element).find(COUNT_CONTAINER_REF).text(time);
+            }
+            for (var i = 0; i < entries.length; i++) {
+                var url = entries[i];
+                var element = document.getElementById(url);
+                var countSpan = $(element).find(COUNT_CONTAINER_REF);
+                if (countSpan.text() == '') {
+                    var oldCountSpan = $(element).find(OLD_COUNT_CONTAINER_REF).text();
+                    if(oldCountSpan!=''){
+                        countSpan.text(0+parseInt(oldCountSpan));
+                    }else{
+                        countSpan.text(0);          
+                    }
+                }
+            }
+        })
+        .fail(function(object, error) {
+            console.log("Error: " + error.code + " " + error.message);
+        });
+}
+
+function addCount(Counter) {
+    var $visitors = $(".leancloud_visitors");
+    var url = $visitors.attr('id').trim();
+    var title = $visitors.attr('data-flag-title').trim();
+    var query = new AV.Query(Counter);
+
+    query.equalTo("url", url);
+    query.find({
+        success: function(results) {
+            if (results.length > 0) {
+                var counter = results[0];
+                counter.fetchWhenSave(true);
+                counter.increment("time");
+                counter.save(null, {
+                    success: function(counter) {
+                        var $element = $(document.getElementById(url));
+                        $element.find('.leancloud-visitors-count').text(counter.get('time'));
+                    },
+                    error: function(counter, error) {
+                        console.log('Failed to save Visitor num, with error message: ' + error.message);
+                    }
+                });
+            } else {
+                var newcounter = new Counter();
+                 
+                var acl = new AV.ACL();
+                acl.setPublicReadAccess(true);
+                acl.setPublicWriteAccess(true);
+                newcounter.setACL(acl);
+                 
+                newcounter.set("title", title);
+                newcounter.set("url", url);
+                var OLD_COUNT_CONTAINER_REF = '.old-visitors-count';
+                var $element = $(document.getElementById(url));
+                var oldCountSpan = $element.find(OLD_COUNT_CONTAINER_REF).text();
+                if(oldCountSpan!=''){
+                    newcounter.set("time", parseInt(oldCountSpan)+1);
+                }else{
+ 	                    newcounter.set("time",  1);
+                }
+                newcounter.save(null, {
+                    success: function(newcounter) {
+                        var $element = $(document.getElementById(url));
+                        $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+                    },
+                    error: function(newcounter, error) {
+                        console.log('Failed to create');
+                    }
+                });
+            }
+        },
+        error: function(error) {
+            console.log('Error:' + error.code + " " + error.message);
+        }
+    });
+}
+$(function() {
+    var Counter = AV.Object.extend("Counter");
+    
+    
+    if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+    } else {
+        showTime(Counter);
+    }
+});
+</script>
+
+                            
+                            
+                            
+                            
+                    </span>
                 </div>
             </div>
         </div>
@@ -175,145 +332,155 @@
 <article>
     <div class="container">
         <div class="row">
+
             
             <div class="
-            col-lg-8 col-lg-offset-1
-            col-md-8 col-md-offset-1
-            col-sm-12
-            col-xs-12
-            post-container">
-            
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
                 
-            
-            
-            </div>
-            
-            
+                
 
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
+                
+                
+<div class="entry-shang text-center">
     
+	    <p>「真诚赞赏，手留余香」</p>
 	
-    <section class="visible-md visible-lg">
-	
-        <div class="short-about">
-            
-            <a href="/about">
-               <img src="/img/headpicture.jpg" alt="avatar" style="cursor: pointer" />
-            </a>
-            
-            
-                <p>High-performance computing engineer, CUDA operator developer, AI beginner.</p>
-            
-           
-           <ul class="list-inline">
-               
-               <li>
-                   <a href="mailto:geng_sun@163.com">
-                      <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-                      </span>
-                   </a>
-               </li>
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://www.zhihu.com/people/gang-syun">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-stack-1x fa-inverse">知</i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               <li>
-                   <a target="_blank" href="https://github.com/sungenglab">
-                       <span class="fa-stack fa-lg">
-                           <i class="fas fa-circle fa-stack-2x"></i>
-                           <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                       </span>
-                   </a>
-               </li>
-               
-               
-               
-               
-               
-               
-            
-            
-               
-               
-               
-               
-                </ul>
-            </div>
-    </section>
-	
-    
-    
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FEATURED TAGS</h5>
-        <div class="tags">
-            
-            
-               
-                    <a href="/tags/cuda" title="cuda">
-                        cuda
-                    </a>
-               
-            
-               
-                    <a href="/tags/pytorch" title="pytorch">
-                        pytorch
-                    </a>
-               
-            
-               
-                    <a href="/tags/twikoo" title="twikoo">
-                        twikoo
-                    </a>
-               
-            
-               
-                    <a href="/tags/%E5%BB%BA%E7%AB%99" title="建站">
-                        建站
-                    </a>
-               
-            
-        </div>
-    </section>
-    
-
-    
-    
-    <section>
-        <hr class="hidden-sm hidden-xs">
-        <h5>FRIENDS</h5>
-        <ul class="list-inline">
-            
-            <li><a target="_blank" href="">Contact me to apply to settle in.</a></li>
-            
-        </ul>
-    </section>
-    
-    
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
 </div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="http://localhost:1313/"><img src="/img/headpicture.jpg" />SunGeng Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
 
+                
+
+                
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/archive/" data-toggle="tooltip" data-placement="top" title="Posts Archive">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/about/" data-toggle="tooltip" data-placement="top" title="">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+                
+
+                
+
+<div id="twikoo-tcomment"></div>
+<script src="https://cdn.jsdelivr.net/npm/twikoo@1.6.32/dist/twikoo.all.min.js"></script>
+<script>
+    twikoo.init({
+        envId: 'https:\/\/qiaoyan-myspace.hf.space',
+        el: '#twikoo-tcomment',
+        lang: 'zh-CN',
+        region: 'ap-guangzhou',
+    })
+</script>
+
+
+
+            </div>
+
+            
+            
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+            
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/cuda" title="cuda">
+                            cuda
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/pytorch" title="pytorch">
+                            pytorch
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/twikoo" title="twikoo">
+                            twikoo
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/%E5%BB%BA%E7%AB%99" title="建站">
+                            建站
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
         </div>
     </div>
 </article>

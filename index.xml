@@ -2,73 +2,80 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>SunGeng Blog</title>
-    <link>https://sungenglab.github.io/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content on SunGeng Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 May 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://sungenglab.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 26 May 2024 15:51:59 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>01 计算机系统漫游</title>
+      <link>http://localhost:1313/notes/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</link>
+      <pubDate>Sun, 26 May 2024 15:51:59 +0800</pubDate>
+      <guid>http://localhost:1313/notes/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/01-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</guid>
+      <description>第一章：前菜 系统中所有信息（磁盘文件，内存程序）都是一组01序列，称为位序列，8个位（byte）组织为一组，成为一个字节 英文文本字符都是用A</description>
+    </item>
     <item>
       <title>建站|Twikoo评论系统配置从0到1</title>
-      <link>https://sungenglab.github.io/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</link>
+      <link>http://localhost:1313/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</link>
       <pubDate>Sat, 11 May 2024 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</guid>
+      <guid>http://localhost:1313/post/%E5%B0%8F%E7%99%BD%E5%BB%BA%E7%AB%99%E4%B9%8B%E6%97%85/</guid>
       <description>在Hugging Face上部署Twikoo数据库 版本更新 配置即时通知/邮件通知 显示评论人头像 配置图床实现图片上传功能 选了一圈儿，最终使用了s</description>
     </item>
     <item>
       <title>高性能计算基础知识</title>
-      <link>https://sungenglab.github.io/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/</link>
+      <link>http://localhost:1313/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/</link>
       <pubDate>Sun, 28 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/</guid>
+      <guid>http://localhost:1313/post/2024-04-28%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80/</guid>
       <description>1. 半精度浮点数FP16各个部分的具体位数，为什么要有半精度浮点数？ 半精度浮点数（FP16）是一种使用16位（2字节）来表示的浮点数格式。在这</description>
     </item>
     <item>
       <title>Hello World</title>
-      <link>https://sungenglab.github.io/post/firsttry/</link>
+      <link>http://localhost:1313/post/firsttry/</link>
       <pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/post/firsttry/</guid>
+      <guid>http://localhost:1313/post/firsttry/</guid>
       <description></description>
     </item>
     <item>
       <title>深入理解Pytorch源码中的CUDA算子01-BlockReduceSum</title>
-      <link>https://sungenglab.github.io/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</link>
+      <link>http://localhost:1313/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</link>
       <pubDate>Sat, 27 Apr 2024 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</guid>
+      <guid>http://localhost:1313/post/2024-04-27pytorch%E7%AE%97%E5%AD%90%E5%88%86%E6%9E%90/</guid>
       <description>准备开一个专题，写写pytorch中常用的CUDA算子源码，作为基础储备，索性就从最基础的Reduce操作开始吧！ 0x00 前言 在神经网络的计算中，</description>
     </item>
     <item>
       <title>深入理解Pytorch源码中的CUDA算子02</title>
-      <link>https://sungenglab.github.io/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/</link>
+      <link>http://localhost:1313/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/</link>
       <pubDate>Mon, 04 Jun 2018 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/</guid>
+      <guid>http://localhost:1313/2024-05-11pytorch-cuda%E7%AE%97%E5%AD%90/</guid>
       <description></description>
     </item>
     <item>
       <title></title>
-      <link>https://sungenglab.github.io/about/</link>
+      <link>http://localhost:1313/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/about/</guid>
+      <guid>http://localhost:1313/about/</guid>
       <description>About Me SunGeng A Software engineer, Mainly engaged in high-performance computing, heterogeneous computing.</description>
     </item>
     <item>
       <title></title>
-      <link>https://sungenglab.github.io/notes/</link>
+      <link>http://localhost:1313/notes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/notes/</guid>
+      <guid>http://localhost:1313/notes/</guid>
       <description></description>
     </item>
     <item>
       <title></title>
-      <link>https://sungenglab.github.io/search/placeholder/</link>
+      <link>http://localhost:1313/search/placeholder/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/search/placeholder/</guid>
+      <guid>http://localhost:1313/search/placeholder/</guid>
       <description></description>
     </item>
     <item>
       <title>Posts Archive</title>
-      <link>https://sungenglab.github.io/archive/</link>
+      <link>http://localhost:1313/archive/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://sungenglab.github.io/archive/</guid>
+      <guid>http://localhost:1313/archive/</guid>
       <description></description>
     </item>
   </channel>
