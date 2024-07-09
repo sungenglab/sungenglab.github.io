@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+}
+
+.col-left {
+    flex: 1;
+    padding: 10px;
+    background-color: #f4f4f4;
+}
+
+.col-right {
+    flex: 2; /* 调整宽度比例 */
+    padding: 10px;
+    padding-right: 20px; /* 添加额外的右内边距 */
+    box-sizing: border-box; /* 确保内边距包含在宽度内 */
+}
+
+/* 确保侧边栏列表的样式 */
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 5px 0;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline;
+}
